@@ -132,18 +132,14 @@
     .btn { transition: none; }
   }
 
-  /* イラストの塗りと線 */
-  .o   { stroke: var(--line); stroke-width: 3; stroke-linejoin: round; stroke-linecap: round; }
-  .lo  { fill: none; stroke: var(--line); stroke-linecap: round; stroke-linejoin: round; }
-  .ls  { fill: none; stroke: var(--suit); stroke-linecap: round; stroke-linejoin: round; }
-  .f-suit    { fill: var(--suit); }
-  .f-tire    { fill: var(--tire); }
-  .f-fairing { fill: var(--fairing); }
-  .f-plate   { fill: var(--plate); }
-  .f-helmet  { fill: var(--helmet); }
-  .f-metal   { fill: var(--metal); }
-  .f-glass   { fill: var(--glass); }
-  .num { font-family: "Dela Gothic One", sans-serif; font-size: 19px; fill: #141B2D; text-anchor: middle; }
+  /* 写真 */
+  .photo {
+    margin-bottom: clamp(20px, 4vh, 36px);
+    border: 3px solid var(--line);
+    border-radius: 10px;
+    box-shadow: 8px 8px 0 var(--btn-shadow);
+    object-fit: cover;
+  }
 
   /* 縁石 */
   .kerb {
@@ -174,60 +170,7 @@
       <a class="btn" href="/hangoff/">HangOff設定を開く</a>
     </div>
 
-    <svg class="rider" viewBox="62 40 296 201" role="img" aria-label="バイクのライダーがハングオフでコーナーを曲がるイラスト">
-      <g transform="translate(0 -6)">
-        <!-- ひざが路面をこする火花 -->
-        <path class="lo" stroke-width="2.5" d="M139,238 l-17,-1 M141,231 l-13,-8 M136,244 l-12,3"/>
-
-        <!-- イン側の脚（腰 → ひざ → ステップ） -->
-        <path class="lo" stroke-width="30" d="M200,160 L156,232 L240,199"/>
-        <path class="ls" stroke-width="24" d="M200,160 L156,232 L240,199"/>
-        <ellipse class="o f-tire" cx="243" cy="198" rx="13" ry="9" transform="rotate(-20 243 198)"/>
-        <circle class="o f-tire" cx="150" cy="238" r="6.5"/>
-
-        <!-- 車体（接地点を軸に傾ける） -->
-        <g transform="translate(330 240) rotate(-48)">
-          <!-- 上半身とアウト側の腕 -->
-          <path class="lo" stroke-width="22" d="M-5,-234 Q34,-232 58,-198"/>
-          <path class="ls" stroke-width="16" d="M-5,-234 Q34,-232 58,-198"/>
-          <ellipse class="o f-suit" cx="-45" cy="-225" rx="52" ry="30"/>
-
-          <!-- ハンドルとグローブ -->
-          <path class="lo" stroke-width="6" d="M-40,-202 L-62,-194 M40,-202 L62,-194"/>
-          <circle class="o f-tire" cx="62" cy="-194" r="8"/>
-
-          <!-- フロントフォーク -->
-          <rect class="o f-metal" x="-30" y="-150" width="9" height="96" rx="3"/>
-          <rect class="o f-metal" x="21" y="-150" width="9" height="96" rx="3"/>
-
-          <!-- フロントタイヤとフェンダー -->
-          <rect class="o f-tire" x="-17" y="-112" width="34" height="112" rx="17"/>
-          <path class="o f-fairing" d="M-22,-102 C-22,-130 22,-130 22,-102 L18,-90 C12,-108 -12,-108 -18,-90 Z"/>
-
-          <!-- カウル -->
-          <path class="o f-fairing" d="M0,-118 C-40,-124 -53,-160 -47,-190 C-41,-215 -20,-226 0,-226 C20,-226 41,-215 47,-190 C53,-160 40,-124 0,-118 Z"/>
-          <path class="f-tire" d="M-37,-198 L-9,-187 L-11,-178 L-34,-185 Z"/>
-          <path class="f-tire" d="M37,-198 L9,-187 L11,-178 L34,-185 Z"/>
-          <ellipse class="o f-plate" cx="0" cy="-151" rx="21" ry="16"/>
-          <text class="num" x="0" y="-144">34</text>
-
-          <!-- スクリーン -->
-          <path class="o f-glass" d="M-33,-214 C-31,-247 -15,-265 0,-265 C15,-265 31,-247 33,-214 C16,-223 -16,-223 -33,-214 Z"/>
-
-          <!-- イン側の腕（肩 → ひじ → グリップ） -->
-          <path class="lo" stroke-width="22" d="M-88,-216 L-101,-178 L-64,-192"/>
-          <path class="ls" stroke-width="16" d="M-88,-216 L-101,-178 L-64,-192"/>
-          <circle class="o f-tire" cx="-63" cy="-193" r="8"/>
-        </g>
-
-        <!-- ヘルメット -->
-        <g transform="rotate(-18 103 124)">
-          <circle class="o f-helmet" cx="103" cy="124" r="26"/>
-          <path class="f-suit" d="M97,99 L109,99 L108,111 L98,111 Z"/>
-          <path class="o f-tire" d="M82,119 Q103,108 124,119 Q125,131 119,136 Q103,128 87,136 Q81,131 82,119 Z"/>
-        </g>
-      </g>
-    </svg>
+    <img class="rider photo" src="rider.png" alt="バイクのライダーがハングオフでコーナーを曲がるイラスト">
   </section>
 </main>
 

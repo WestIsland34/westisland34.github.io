@@ -3,15 +3,237 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>westisland.jp</title>
+<title>にしやん工房</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Dela+Gothic+One&family=Zen+Kaku+Gothic+New:wght@500;700&display=swap" rel="stylesheet">
 <style>
-  body { font-family: sans-serif; text-align: center; margin-top: 80px; }
-  a.btn { display: inline-block; padding: 16px 40px; font-size: 20px;
-          color: #fff; background: #0a7d5a; border-radius: 8px; text-decoration: none; }
+  :root {
+    --bg: #FFC400;        /* ゼッケンの黄色 */
+    --text: #141B2D;
+    --sub: #4A4320;
+    --line: #141B2D;      /* イラストの線 */
+    --tire: #141B2D;
+    --fairing: #FFFFFF;
+    --plate: #FFC400;
+    --helmet: #FFFFFF;
+    --suit: #D8342B;
+    --metal: #8A8F9C;
+    --glass: rgba(20, 27, 45, .28);
+    --kerb: #D8342B;
+    --asphalt: #141B2D;
+    --asphalt-text: #C9CEDD;
+    --btn-bg: #141B2D;
+    --btn-text: #FFC400;
+    --btn-shadow: #FFFFFF;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      color-scheme: dark;
+      --bg: #141B2D;
+      --text: #FFC400;
+      --sub: #C9CEDD;
+      --line: #F6F3E7;
+      --tire: #05080F;
+      --fairing: #FFC400;
+      --plate: #F6F3E7;
+      --helmet: #F6F3E7;
+      --glass: rgba(246, 243, 231, .25);
+      --asphalt: #0A0E19;
+      --btn-bg: #FFC400;
+      --btn-text: #141B2D;
+      --btn-shadow: #D8342B;
+    }
+  }
+
+  * { box-sizing: border-box; }
+  html { height: 100%; }
+  body {
+    margin: 0;
+    min-height: 100%;
+    display: flex;
+    flex-direction: column;
+    overflow-x: clip;
+    background: var(--bg);
+    color: var(--text);
+    font-family: "Zen Kaku Gothic New", "Hiragino Kaku Gothic ProN", "Yu Gothic", Meiryo, sans-serif;
+    font-weight: 500;
+    line-height: 1.7;
+  }
+
+  .wrap {
+    width: 100%;
+    max-width: 1120px;
+    margin: 0 auto;
+    padding: 0 clamp(20px, 5vw, 56px);
+  }
+
+  main { flex: 1; display: flex; flex-direction: column; }
+
+  .masthead { padding-top: clamp(40px, 9vh, 96px); }
+  .masthead h1 {
+    margin: 0;
+    font-family: "Dela Gothic One", "Hiragino Kaku Gothic ProN", "Yu Gothic", Meiryo, sans-serif;
+    font-weight: 400;
+    font-size: clamp(3rem, 14vw, 9rem);
+    line-height: 1.08;
+    letter-spacing: .01em;
+    white-space: nowrap;
+  }
+  .masthead p {
+    margin: .9rem 0 0;
+    font-size: clamp(1rem, 2.2vw, 1.25rem);
+    font-weight: 700;
+    color: var(--sub);
+  }
+
+  .work {
+    flex: 1;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.35fr);
+    align-items: end;
+    gap: clamp(16px, 4vw, 48px);
+    padding-top: clamp(32px, 7vh, 72px);
+  }
+  .work-text { padding-bottom: clamp(28px, 6vh, 56px); }
+  .work-text h2 {
+    margin: 0;
+    font-family: "Dela Gothic One", "Hiragino Kaku Gothic ProN", "Yu Gothic", Meiryo, sans-serif;
+    font-weight: 400;
+    font-size: clamp(1.75rem, 4vw, 2.5rem);
+    line-height: 1.2;
+  }
+  .work-text p { margin: .4rem 0 1.4rem; color: var(--sub); font-weight: 700; }
+
+  .btn {
+    display: inline-block;
+    padding: .85em 1.7em;
+    font-family: "Dela Gothic One", "Hiragino Kaku Gothic ProN", "Yu Gothic", Meiryo, sans-serif;
+    font-size: clamp(1.1rem, 2.4vw, 1.4rem);
+    line-height: 1.2;
+    text-decoration: none;
+    color: var(--btn-text);
+    background: var(--btn-bg);
+    border-radius: 10px;
+    box-shadow: 5px 5px 0 var(--btn-shadow);
+    transition: transform .12s ease, box-shadow .12s ease;
+  }
+  .btn:hover { transform: translate(-2px, -2px); box-shadow: 7px 7px 0 var(--btn-shadow); }
+  .btn:active { transform: translate(3px, 3px); box-shadow: 2px 2px 0 var(--btn-shadow); }
+  .btn:focus-visible { outline: 3px solid var(--text); outline-offset: 4px; }
+
+  .rider { display: block; width: 100%; height: auto; animation: ride-in .9s cubic-bezier(.2, .8, .2, 1) both; }
+  @keyframes ride-in {
+    from { transform: translateX(22%); opacity: 0; }
+    to   { transform: none; opacity: 1; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .rider { animation: none; }
+    .btn { transition: none; }
+  }
+
+  /* イラストの塗りと線 */
+  .o   { stroke: var(--line); stroke-width: 3; stroke-linejoin: round; stroke-linecap: round; }
+  .lo  { fill: none; stroke: var(--line); stroke-linecap: round; stroke-linejoin: round; }
+  .ls  { fill: none; stroke: var(--suit); stroke-linecap: round; stroke-linejoin: round; }
+  .f-suit    { fill: var(--suit); }
+  .f-tire    { fill: var(--tire); }
+  .f-fairing { fill: var(--fairing); }
+  .f-plate   { fill: var(--plate); }
+  .f-helmet  { fill: var(--helmet); }
+  .f-metal   { fill: var(--metal); }
+  .f-glass   { fill: var(--glass); }
+  .num { font-family: "Dela Gothic One", sans-serif; font-size: 19px; fill: #141B2D; text-anchor: middle; }
+
+  /* 縁石 */
+  .kerb {
+    height: 24px;
+    border-top: 3px solid var(--line);
+    background: repeating-linear-gradient(90deg, var(--kerb) 0 64px, #FFFFFF 64px 128px);
+  }
+  footer { background: var(--asphalt); color: var(--asphalt-text); font-size: .875rem; }
+  footer .wrap { padding-top: 18px; padding-bottom: 22px; }
+
+  @media (max-width: 720px) {
+    .work { grid-template-columns: 1fr; gap: 0; }
+    .work-text { padding-bottom: 20px; }
+  }
 </style>
 </head>
 <body>
-  <h1>westisland.jp</h1>
-  <a class="btn" href="/hangoff/">HangOff</a>
+<main>
+  <header class="wrap masthead">
+    <h1>にしやん工房</h1>
+    <p>つくったものを、ここに置いています。</p>
+  </header>
+
+  <section class="wrap work">
+    <div class="work-text">
+      <h2>HangOff</h2>
+      <p>HangOffの設定ページです。</p>
+      <a class="btn" href="/hangoff/">HangOff設定を開く</a>
+    </div>
+
+    <svg class="rider" viewBox="62 40 296 201" role="img" aria-label="バイクのライダーがハングオフでコーナーを曲がるイラスト">
+      <g transform="translate(0 -6)">
+        <!-- ひざが路面をこする火花 -->
+        <path class="lo" stroke-width="2.5" d="M139,238 l-17,-1 M141,231 l-13,-8 M136,244 l-12,3"/>
+
+        <!-- イン側の脚（腰 → ひざ → ステップ） -->
+        <path class="lo" stroke-width="30" d="M200,160 L156,232 L240,199"/>
+        <path class="ls" stroke-width="24" d="M200,160 L156,232 L240,199"/>
+        <ellipse class="o f-tire" cx="243" cy="198" rx="13" ry="9" transform="rotate(-20 243 198)"/>
+        <circle class="o f-tire" cx="150" cy="238" r="6.5"/>
+
+        <!-- 車体（接地点を軸に傾ける） -->
+        <g transform="translate(330 240) rotate(-48)">
+          <!-- 上半身とアウト側の腕 -->
+          <path class="lo" stroke-width="22" d="M-5,-234 Q34,-232 58,-198"/>
+          <path class="ls" stroke-width="16" d="M-5,-234 Q34,-232 58,-198"/>
+          <ellipse class="o f-suit" cx="-45" cy="-225" rx="52" ry="30"/>
+
+          <!-- ハンドルとグローブ -->
+          <path class="lo" stroke-width="6" d="M-40,-202 L-62,-194 M40,-202 L62,-194"/>
+          <circle class="o f-tire" cx="62" cy="-194" r="8"/>
+
+          <!-- フロントフォーク -->
+          <rect class="o f-metal" x="-30" y="-150" width="9" height="96" rx="3"/>
+          <rect class="o f-metal" x="21" y="-150" width="9" height="96" rx="3"/>
+
+          <!-- フロントタイヤとフェンダー -->
+          <rect class="o f-tire" x="-17" y="-112" width="34" height="112" rx="17"/>
+          <path class="o f-fairing" d="M-22,-102 C-22,-130 22,-130 22,-102 L18,-90 C12,-108 -12,-108 -18,-90 Z"/>
+
+          <!-- カウル -->
+          <path class="o f-fairing" d="M0,-118 C-40,-124 -53,-160 -47,-190 C-41,-215 -20,-226 0,-226 C20,-226 41,-215 47,-190 C53,-160 40,-124 0,-118 Z"/>
+          <path class="f-tire" d="M-37,-198 L-9,-187 L-11,-178 L-34,-185 Z"/>
+          <path class="f-tire" d="M37,-198 L9,-187 L11,-178 L34,-185 Z"/>
+          <ellipse class="o f-plate" cx="0" cy="-151" rx="21" ry="16"/>
+          <text class="num" x="0" y="-144">34</text>
+
+          <!-- スクリーン -->
+          <path class="o f-glass" d="M-33,-214 C-31,-247 -15,-265 0,-265 C15,-265 31,-247 33,-214 C16,-223 -16,-223 -33,-214 Z"/>
+
+          <!-- イン側の腕（肩 → ひじ → グリップ） -->
+          <path class="lo" stroke-width="22" d="M-88,-216 L-101,-178 L-64,-192"/>
+          <path class="ls" stroke-width="16" d="M-88,-216 L-101,-178 L-64,-192"/>
+          <circle class="o f-tire" cx="-63" cy="-193" r="8"/>
+        </g>
+
+        <!-- ヘルメット -->
+        <g transform="rotate(-18 103 124)">
+          <circle class="o f-helmet" cx="103" cy="124" r="26"/>
+          <path class="f-suit" d="M97,99 L109,99 L108,111 L98,111 Z"/>
+          <path class="o f-tire" d="M82,119 Q103,108 124,119 Q125,131 119,136 Q103,128 87,136 Q81,131 82,119 Z"/>
+        </g>
+      </g>
+    </svg>
+  </section>
+</main>
+
+<div class="kerb" aria-hidden="true"></div>
+<footer>
+  <div class="wrap">westisland.jp</div>
+</footer>
 </body>
 </html>

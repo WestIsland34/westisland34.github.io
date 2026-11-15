@@ -73,7 +73,7 @@
 
   header.hero { padding: clamp(20px, 5vh, 48px) 0 8px; }
   header.hero .kicker { margin: 0; font-weight: 700; color: var(--sub); }
-  header.hero h1 { margin: .1em 0 .3em; font-size: clamp(2rem, 7vw, 3.4rem); line-height: 1.15; }
+  header.hero h1 { margin: .1em 0 .3em; font-size: clamp(1.6rem, 8vw, 3.4rem); line-height: 1.2; font-weight: 700; letter-spacing: .02em; }
   header.hero .lead { margin: 0; font-size: clamp(1rem, 2.4vw, 1.15rem); font-weight: 700; color: var(--sub); }
 
   .card {
@@ -97,6 +97,18 @@
   .latest { display: flex; flex-wrap: wrap; gap: 8px 24px; align-items: baseline; margin: 4px 0 16px; }
   .latest .ver { font-size: clamp(1.6rem, 5vw, 2.2rem); }
   .latest .meta { color: var(--card-sub); font-size: .95rem; }
+  .changes { margin: 0 0 20px; padding: 12px 16px; border-radius: 8px; background: var(--soft); }
+  .changes-title { margin: 0 0 .2em !important; font-weight: 700; }
+  .changes ul { margin: 0; padding-left: 1.3em; }
+
+  .history { list-style: none; margin: 16px 0 0; padding: 0; }
+  .history > li { padding: 14px 0; border-top: 2px solid var(--line); }
+  .history > li:last-child { border-bottom: 2px solid var(--line); }
+  .history .head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 14px; }
+  .history .v { font-family: "Dela Gothic One", "Hiragino Kaku Gothic ProN", "Yu Gothic", Meiryo, sans-serif; font-size: 1.25rem; }
+  .history .d { color: var(--card-sub); font-size: .95rem; }
+  .history .badge { font-size: .8rem; font-weight: 700; padding: 1px 10px; border-radius: 999px; background: var(--chip); color: var(--chip-text); }
+  .history ul { margin: .3em 0 0; padding-left: 1.3em; }
 
   .btn {
     display: inline-block;
@@ -174,7 +186,7 @@
 
   <header class="hero">
     <p class="kicker">HangOff</p>
-    <h1 class="display">本体のアップデート</h1>
+    <h1>本体のアップデート</h1>
     <p class="lead">パソコンでファイルを1つコピーするだけ。専用のソフトはいりません。<br>5分くらいで終わります。</p>
   </header>
 
@@ -189,10 +201,14 @@
   </section>
 
   <section class="card" aria-labelledby="dl">
-    <h2 id="dl" class="display">いちばん新しいプログラム</h2>
+    <h2 id="dl" class="display">最新版</h2>
     <div class="latest">
       <span class="ver display" id="ver">読み込み中…</span>
       <span class="meta" id="meta"></span>
+    </div>
+    <div id="latestChanges" class="changes" hidden>
+      <p class="changes-title">この版で変わったこと</p>
+      <ul id="latestList"></ul>
     </div>
     <a class="btn" id="download" href="/hangoff/" download>ダウンロード</a>
     <p class="note" id="dlNote">押すと <span class="name" id="fname">HangOff-v○○.uf2</span> というファイルが「ダウンロード」フォルダに保存されます。</p>
@@ -292,10 +308,16 @@
       <li class="step">
         <h3>新しい版になったか確かめる</h3>
         <p>USB を抜いて、いつものようにバッテリーをつなぎます。</p>
-        <p>スマホで <a href="/hangoff/">HangOff 設定</a> を開いて本体に接続します。タイトルの横の「<b>本体 v○○</b>」が、上の「いちばん新しいプログラム」と同じなら完了です。</p>
+        <p>スマホで <a href="/hangoff/">HangOff 設定</a> を開いて本体に接続します。タイトルの横の「<b>本体 v○○</b>」が、上の「最新版」と同じなら完了です。</p>
         <p class="note">設定や基準姿勢、記録したデータは、アップデートしても消えません。</p>
       </li>
     </ol>
+  </section>
+
+  <section class="card" aria-labelledby="hist" id="historyCard" hidden>
+    <h2 id="hist" class="display">更新履歴</h2>
+    <p class="note">ダウンロードできるのは最新版だけです。最新版には、それまでの版の変更もすべて入っています。</p>
+    <ol class="history" id="historyList"></ol>
   </section>
 
   <section class="card" aria-labelledby="trouble">
@@ -346,6 +368,42 @@
 </footer>
 
 <script>
+  // 更新履歴 (新しい順) を読んで、最新版の変更点と履歴の一覧を出す
+  function fmtDate(s) {
+    const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(s || '');
+    return m ? `${m[1]}年${+m[2]}月${+m[3]}日` : (s || '');
+  }
+  function addItems(ul, items) {
+    for (const t of items || []) { const li = document.createElement('li'); li.textContent = t; ul.appendChild(li); }
+  }
+  async function loadHistory(latestVer) {
+    try {
+      const res = await fetch('/hangoff/firmware/history.json', { cache: 'no-store' });
+      if (!res.ok) return;
+      const list = await res.json();
+      const latest = list.find(h => h.version === latestVer);
+      if (latest) {
+        addItems(document.getElementById('latestList'), latest.changes);
+        document.getElementById('latestChanges').hidden = false;
+      }
+      const ol = document.getElementById('historyList');
+      for (const h of list) {
+        const li = document.createElement('li');
+        const head = document.createElement('div');
+        head.className = 'head';
+        const v = document.createElement('span'); v.className = 'v'; v.textContent = 'v' + h.version;
+        const d = document.createElement('span'); d.className = 'd'; d.textContent = fmtDate(h.date);
+        head.append(v, d);
+        if (h.version === latestVer) { const b = document.createElement('span'); b.className = 'badge'; b.textContent = '最新版'; head.append(b); }
+        const ul = document.createElement('ul');
+        addItems(ul, h.changes);
+        li.append(head, ul);
+        ol.appendChild(li);
+      }
+      document.getElementById('historyCard').hidden = false;
+    } catch (e) { /* 履歴が読めなくても、ダウンロードはできる */ }
+  }
+
   // いちばん新しい版の情報を読む (HangOff 設定アプリと同じファイル)
   (async () => {
     const ver = document.getElementById('ver');
@@ -357,10 +415,11 @@
       if (!res.ok) throw new Error(res.status);
       const j = await res.json();
       ver.textContent = 'v' + j.version;
-      meta.textContent = j.date ? j.date + ' 公開' : '';
+      meta.textContent = j.date ? fmtDate(j.date) + ' 公開' : '';
       dl.href = '/hangoff/firmware/' + encodeURIComponent(j.file);
       dl.setAttribute('download', j.file);
       fname.textContent = j.file;
+      loadHistory(j.version);
     } catch (e) {
       ver.textContent = '読み込めませんでした';
       dl.removeAttribute('download');

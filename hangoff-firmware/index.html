@@ -145,8 +145,8 @@
   summary::-webkit-details-marker { display: none; }
   summary::after { content: "＋"; position: absolute; right: 0; top: 0; }
   details[open] summary::after { content: "－"; }
-  details p, details ul { margin: .6em 0 0; }
-  details ul { padding-left: 1.3em; }
+  details p, details ul, details ol { margin: .6em 0 0; }
+  details ul, details ol { padding-left: 1.3em; }
 
   .kerb { height: 24px; margin-top: 48px; border-top: 3px solid var(--line); background: repeating-linear-gradient(90deg, var(--kerb) 0 64px, #FFFFFF 64px 128px); }
   footer { background: var(--asphalt); color: var(--asphalt-text); font-size: .875rem; }
@@ -306,6 +306,17 @@
         <li>ドラッグしたファイルの名前が <span class="name">.uf2</span> で終わっているか確かめてください。</li>
         <li>もう一度、手順4（ボタンを2回押す）からやり直してください。</li>
       </ul>
+    </details>
+
+    <details>
+      <summary>コピーしても XIAO-SENSE が消えない（Windows）</summary>
+      <p>ダウンロードしたファイルが<b>暗号化</b>されていると、コピーしたように見えても書き込まれません。ファイルのアイコンに<b>鍵のマーク</b>が付いていたら、暗号化されています。次の方法で解除してから、もう一度コピーしてください。</p>
+      <ol>
+        <li>ダウンロードした <span class="name">.uf2</span> のファイルを右クリックして、「プロパティ」を選ぶ</li>
+        <li>「全般」タブの「詳細設定」を押す</li>
+        <li>「内容を暗号化してデータをセキュリティで保護する」のチェックを外す</li>
+        <li>「OK」を押し、もう一度「OK」を押す</li>
+      </ol>
     </details>
 
     <details>

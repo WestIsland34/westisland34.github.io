@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HangOff 本体のアップデート | にしやん工房</title>
+<meta name="description" content="HangOff 本体（XIAO nRF52840 Sense）のプログラムを、パソコンでファイルをコピーするだけで新しくする手順です。">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Dela+Gothic+One&family=Zen+Kaku+Gothic+New:wght@500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #FFC400;
+    --text: #141B2D;
+    --sub: #4A4320;
+    --line: #141B2D;
+    --card: #FFFFFF;
+    --card-text: #141B2D;
+    --card-sub: #4F5566;
+    --accent: #D8342B;
+    --chip: #141B2D;
+    --chip-text: #FFC400;
+    --soft: #FFF4CC;
+    --kerb: #D8342B;
+    --asphalt: #141B2D;
+    --asphalt-text: #C9CEDD;
+    --btn-bg: #141B2D;
+    --btn-text: #FFC400;
+    --btn-shadow: #FFFFFF;
+    --board: #1F6B3A;
+    --board-line: #0E3B1F;
+    --metal: #B8BDC8;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      color-scheme: dark;
+      --bg: #141B2D;
+      --text: #FFC400;
+      --sub: #C9CEDD;
+      --line: #F6F3E7;
+      --card: #1E2740;
+      --card-text: #F6F3E7;
+      --card-sub: #B5BBCB;
+      --accent: #FF6A5C;
+      --chip: #FFC400;
+      --chip-text: #141B2D;
+      --soft: #283252;
+      --asphalt: #0A0E19;
+      --btn-bg: #FFC400;
+      --btn-text: #141B2D;
+      --btn-shadow: #D8342B;
+      --board: #2E8A4F;
+      --board-line: #A9E2BC;
+      --metal: #8A8F9C;
+    }
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: "Zen Kaku Gothic New", "Hiragino Kaku Gothic ProN", "Yu Gothic", Meiryo, sans-serif;
+    font-weight: 500;
+    line-height: 1.8;
+    overflow-x: clip;
+  }
+  .wrap { width: 100%; max-width: 820px; margin: 0 auto; padding: 0 clamp(16px, 5vw, 40px); }
+  .display { font-family: "Dela Gothic One", "Hiragino Kaku Gothic ProN", "Yu Gothic", Meiryo, sans-serif; font-weight: 400; }
+
+  .back { display: inline-block; margin-top: 24px; color: var(--text); font-weight: 700; text-decoration: none; }
+  .back:hover { text-decoration: underline; }
+
+  header.hero { padding: clamp(20px, 5vh, 48px) 0 8px; }
+  header.hero .kicker { margin: 0; font-weight: 700; color: var(--sub); }
+  header.hero h1 { margin: .1em 0 .3em; font-size: clamp(2rem, 7vw, 3.4rem); line-height: 1.15; }
+  header.hero .lead { margin: 0; font-size: clamp(1rem, 2.4vw, 1.15rem); font-weight: 700; color: var(--sub); }
+
+  .card {
+    background: var(--card);
+    color: var(--card-text);
+    border: 3px solid var(--line);
+    border-radius: 12px;
+    box-shadow: 6px 6px 0 var(--btn-shadow);
+    padding: clamp(16px, 4vw, 28px);
+    margin: 28px 0;
+  }
+  .card h2 { margin: 0 0 .5em; font-size: clamp(1.3rem, 3.6vw, 1.7rem); line-height: 1.3; }
+  .card p { margin: .5em 0; }
+  .card .note { color: var(--card-sub); font-size: .95rem; }
+
+  .need { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
+  .need li { display: flex; gap: 12px; align-items: flex-start; }
+  .need .mark { flex: none; width: 28px; height: 28px; border-radius: 50%; background: var(--chip); color: var(--chip-text); display: grid; place-items: center; font-weight: 700; font-size: .9rem; margin-top: 2px; }
+  .ng { margin-top: 14px; padding: 10px 14px; border-radius: 8px; background: var(--soft); font-weight: 700; }
+
+  .latest { display: flex; flex-wrap: wrap; gap: 8px 24px; align-items: baseline; margin: 4px 0 16px; }
+  .latest .ver { font-size: clamp(1.6rem, 5vw, 2.2rem); }
+  .latest .meta { color: var(--card-sub); font-size: .95rem; }
+
+  .btn {
+    display: inline-block;
+    padding: .85em 1.6em;
+    font-family: "Dela Gothic One", "Hiragino Kaku Gothic ProN", "Yu Gothic", Meiryo, sans-serif;
+    font-size: clamp(1.05rem, 2.6vw, 1.3rem);
+    line-height: 1.2;
+    text-decoration: none;
+    color: var(--btn-text);
+    background: var(--btn-bg);
+    border: 3px solid var(--line);
+    border-radius: 10px;
+    box-shadow: 5px 5px 0 var(--accent);
+    transition: transform .12s ease, box-shadow .12s ease;
+  }
+  .btn:hover { transform: translate(-2px, -2px); box-shadow: 7px 7px 0 var(--accent); }
+  .btn:active { transform: translate(3px, 3px); box-shadow: 2px 2px 0 var(--accent); }
+  .btn:focus-visible { outline: 3px solid var(--card-text); outline-offset: 4px; }
+
+  /* 手順 */
+  .steps { list-style: none; margin: 0; padding: 0; counter-reset: step; }
+  .step { position: relative; padding: 0 0 28px 64px; counter-increment: step; }
+  .step::before {
+    content: counter(step);
+    position: absolute; left: 0; top: 0;
+    width: 46px; height: 46px; border-radius: 50%;
+    background: var(--chip); color: var(--chip-text);
+    display: grid; place-items: center;
+    font-family: "Dela Gothic One", sans-serif; font-size: 1.3rem;
+  }
+  .step::after { content: ""; position: absolute; left: 22px; top: 52px; bottom: 6px; width: 3px; background: var(--line); opacity: .25; }
+  .step:last-child { padding-bottom: 0; }
+  .step:last-child::after { display: none; }
+  .step h3 { margin: 6px 0 .3em; font-size: clamp(1.1rem, 3vw, 1.3rem); line-height: 1.4; }
+  .step p { margin: .35em 0; }
+  .step .tip { margin-top: 10px; padding: 10px 14px; border-radius: 8px; background: var(--soft); font-size: .95rem; }
+  .step .tip strong { color: var(--accent); }
+  .fig { display: block; width: 100%; max-width: 440px; height: auto; margin: 14px 0 4px; }
+  .fig text { font-family: "Zen Kaku Gothic New", "Yu Gothic", Meiryo, sans-serif; font-weight: 700; }
+  kbd, .name { font-family: ui-monospace, Consolas, monospace; font-weight: 700; background: var(--soft); padding: 0 .35em; border-radius: 4px; }
+
+  /* 困ったとき */
+  details { border-top: 2px solid var(--line); padding: 12px 0; }
+  details:last-of-type { border-bottom: 2px solid var(--line); }
+  summary { cursor: pointer; font-weight: 700; font-size: 1.05rem; list-style: none; position: relative; padding-right: 28px; }
+  summary::-webkit-details-marker { display: none; }
+  summary::after { content: "＋"; position: absolute; right: 0; top: 0; }
+  details[open] summary::after { content: "－"; }
+  details p, details ul { margin: .6em 0 0; }
+  details ul { padding-left: 1.3em; }
+
+  .kerb { height: 24px; margin-top: 48px; border-top: 3px solid var(--line); background: repeating-linear-gradient(90deg, var(--kerb) 0 64px, #FFFFFF 64px 128px); }
+  footer { background: var(--asphalt); color: var(--asphalt-text); font-size: .875rem; }
+  footer .wrap { padding-top: 18px; padding-bottom: 22px; }
+  footer a { color: inherit; }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .tap { animation: tap 1.6s ease-in-out infinite; transform-origin: center; transform-box: fill-box; }
+    .tap.two { animation-delay: .25s; }
+    @keyframes tap { 0%, 60%, 100% { opacity: 0; transform: scale(.6); } 15% { opacity: 1; transform: scale(1); } 35% { opacity: 0; transform: scale(1.5); } }
+    .move { animation: move 2.4s ease-in-out infinite; }
+    @keyframes move { 0%, 15% { transform: translateX(0); opacity: 1; } 70% { transform: translateX(196px); opacity: 1; } 85%, 100% { transform: translateX(196px); opacity: 0; } }
+  }
+  @media (max-width: 480px) {
+    .step { padding-left: 54px; }
+    .step::before { width: 40px; height: 40px; font-size: 1.1rem; }
+    .step::after { left: 19px; top: 46px; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <a class="back" href="/">← にしやん工房</a>
+
+  <header class="hero">
+    <p class="kicker">HangOff</p>
+    <h1 class="display">本体のアップデート</h1>
+    <p class="lead">パソコンでファイルを1つコピーするだけ。専用のソフトはいりません。<br>5分くらいで終わります。</p>
+  </header>
+
+  <section class="card" aria-labelledby="need">
+    <h2 id="need" class="display">用意するもの</h2>
+    <ul class="need">
+      <li><span class="mark">1</span><span><b>パソコン</b>（Windows か Mac）</span></li>
+      <li><span class="mark">2</span><span><b>USB-C ケーブル</b>（データ通信ができるもの。充電専用のケーブルでは できません）</span></li>
+      <li><span class="mark">3</span><span><b>HangOff 本体</b>（XIAO の基板）</span></li>
+    </ul>
+    <p class="ng">スマホやタブレットでは書き込めません。パソコンで行ってください。</p>
+  </section>
+
+  <section class="card" aria-labelledby="dl">
+    <h2 id="dl" class="display">いちばん新しいプログラム</h2>
+    <div class="latest">
+      <span class="ver display" id="ver">読み込み中…</span>
+      <span class="meta" id="meta"></span>
+    </div>
+    <a class="btn" id="download" href="/hangoff/" download>ダウンロード</a>
+    <p class="note" id="dlNote">押すと <span class="name" id="fname">HangOff-v○○.uf2</span> というファイルが「ダウンロード」フォルダに保存されます。</p>
+  </section>
+
+  <section class="card" aria-labelledby="how">
+    <h2 id="how" class="display">手順</h2>
+    <ol class="steps">
+      <li class="step">
+        <h3>ファイルをダウンロードする</h3>
+        <p>上の「ダウンロード」ボタンを押します。</p>
+        <p>ファイルは「ダウンロード」フォルダに入ります。名前は <span class="name">HangOff-v○○.uf2</span> です（○○ は版の番号）。</p>
+      </li>
+
+      <li class="step">
+        <h3>本体の電源を切る</h3>
+        <p>受信機やサーボ用のバッテリーを外して、本体に電気が来ていない状態にします。</p>
+        <p class="tip"><strong>大事:</strong> バッテリーをつないだまま USB をつなぐと、サーボが急に動くことがあります。</p>
+      </li>
+
+      <li class="step">
+        <h3>本体をパソコンに USB でつなぐ</h3>
+        <p>本体（XIAO）の USB-C と、パソコンをケーブルでつなぎます。</p>
+      </li>
+
+      <li class="step">
+        <h3>リセットボタンを「トントン」と素早く2回押す</h3>
+        <p>USB の差し込み口のすぐ横に、とても小さなボタン（<b>RST</b>）があります。これを素早く2回押します。</p>
+        <svg class="fig" viewBox="0 0 440 220" role="img" aria-label="XIAO の基板。USB の差し込み口の横にある小さな RST ボタンを2回押す">
+          <!-- 基板 -->
+          <rect x="120" y="40" width="200" height="160" rx="16" fill="var(--board)" stroke="var(--board-line)" stroke-width="3"/>
+          <!-- 端子の穴 -->
+          <g fill="var(--metal)">
+            <circle cx="138" cy="80" r="6"/><circle cx="138" cy="106" r="6"/><circle cx="138" cy="132" r="6"/><circle cx="138" cy="158" r="6"/><circle cx="138" cy="184" r="6"/>
+            <circle cx="302" cy="80" r="6"/><circle cx="302" cy="106" r="6"/><circle cx="302" cy="132" r="6"/><circle cx="302" cy="158" r="6"/><circle cx="302" cy="184" r="6"/>
+          </g>
+          <!-- チップ -->
+          <rect x="178" y="110" width="84" height="66" rx="6" fill="var(--metal)" stroke="var(--board-line)" stroke-width="2"/>
+          <!-- USB-C -->
+          <rect x="186" y="22" width="68" height="40" rx="10" fill="var(--metal)" stroke="var(--board-line)" stroke-width="3"/>
+          <rect x="200" y="34" width="40" height="12" rx="6" fill="var(--board-line)"/>
+          <text x="220" y="16" text-anchor="middle" font-size="14" fill="var(--text)">USB-C</text>
+          <!-- RST ボタン -->
+          <rect x="164" y="70" width="16" height="16" rx="3" fill="#F6F3E7" stroke="var(--board-line)" stroke-width="2"/>
+          <circle class="tap" cx="172" cy="78" r="16" fill="none" stroke="var(--accent)" stroke-width="4"/>
+          <circle class="tap two" cx="172" cy="78" r="16" fill="none" stroke="var(--accent)" stroke-width="4"/>
+          <!-- 説明 -->
+          <line x1="150" y1="78" x2="96" y2="78" stroke="var(--accent)" stroke-width="3"/>
+          <text x="90" y="72" text-anchor="end" font-size="18" fill="var(--accent)">RST</text>
+          <text x="90" y="96" text-anchor="end" font-size="15" fill="var(--text)">トントン</text>
+        </svg>
+        <p>うまくいくと、パソコンに <span class="name">XIAO-SENSE</span> という名前の <b>USBメモリのようなもの</b> が現れます。</p>
+        <ul>
+          <li>Windows: エクスプローラーの「PC」の中や、画面の右下に出ます。</li>
+          <li>Mac: デスクトップや Finder の左側に出ます。</li>
+        </ul>
+        <p class="tip"><strong>コツ:</strong> ボタンはとても小さいので、爪の先で押すと押しやすいです。「トン…トン」とゆっくりだと、ふつうの再起動になってしまいます。「トントン」と素早く押してください。</p>
+      </li>
+
+      <li class="step">
+        <h3>ファイルを XIAO-SENSE にドラッグする</h3>
+        <p>ダウンロードした <span class="name">.uf2</span> のファイルを、<span class="name">XIAO-SENSE</span> の中へドラッグ＆ドロップします（コピーでも大丈夫です）。</p>
+        <svg class="fig" viewBox="0 0 440 150" role="img" aria-label="ダウンロードしたファイルを XIAO-SENSE ドライブへドラッグする">
+          <!-- ドライブ -->
+          <rect x="300" y="38" width="120" height="76" rx="10" fill="var(--soft)" stroke="var(--line)" stroke-width="3"/>
+          <rect x="316" y="92" width="88" height="8" rx="4" fill="var(--line)" opacity=".35"/>
+          <text x="360" y="72" text-anchor="middle" font-size="15" fill="var(--text)">XIAO-SENSE</text>
+          <!-- 矢印 -->
+          <path d="M108 76 H278" stroke="var(--accent)" stroke-width="4" stroke-dasharray="8 8"/>
+          <path d="M270 64 L288 76 L270 88" fill="none" stroke="var(--accent)" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+          <!-- ファイル -->
+          <g class="move">
+            <path d="M30 30 H74 L94 50 V122 H30 Z" fill="var(--card)" stroke="var(--line)" stroke-width="3" stroke-linejoin="round"/>
+            <path d="M74 30 V50 H94" fill="none" stroke="var(--line)" stroke-width="3" stroke-linejoin="round"/>
+            <text x="62" y="96" text-anchor="middle" font-size="15" fill="var(--text)">.uf2</text>
+          </g>
+          <text x="62" y="144" text-anchor="middle" font-size="13" fill="var(--text)">ダウンロード</text>
+        </svg>
+        <p>数秒で書き込みが終わり、<span class="name">XIAO-SENSE</span> は<b>自動で消えます</b>。本体が新しいプログラムで動き始めます。</p>
+        <p class="tip"><strong>安心してください:</strong> 「ディスクが正しく取り出されませんでした」などのメッセージが出ることがありますが、<b>正常です</b>。閉じてかまいません。</p>
+      </li>
+
+      <li class="step">
+        <h3>新しい版になったか確かめる</h3>
+        <p>USB を抜いて、いつものようにバッテリーをつなぎます。</p>
+        <p>スマホで <a href="/hangoff/">HangOff 設定</a> を開いて本体に接続します。タイトルの横の「<b>本体 v○○</b>」が、上の「いちばん新しいプログラム」と同じなら完了です。</p>
+        <p class="note">設定や基準姿勢、記録したデータは、アップデートしても消えません。</p>
+      </li>
+    </ol>
+  </section>
+
+  <section class="card" aria-labelledby="trouble">
+    <h2 id="trouble" class="display">困ったとき</h2>
+
+    <details>
+      <summary>XIAO-SENSE が出てこない</summary>
+      <ul>
+        <li>ボタンを押す速さを変えて、何回か試してください。「トントン」と素早く押すのがコツです。</li>
+        <li>ケーブルを別のものに変えてください。充電専用のケーブルでは出てきません。</li>
+        <li>パソコンの別の USB の差し込み口につないでみてください。USB ハブを使っているときは、パソコンに直接つないでください。</li>
+      </ul>
+    </details>
+
+    <details>
+      <summary>名前が XIAO-SENSE ではない</summary>
+      <p>ボタンを2回押したときに新しく出てきたもので、中に <span class="name">INFO_UF2.TXT</span> というファイルがあれば、それで合っています。そこへファイルをドラッグしてください。</p>
+    </details>
+
+    <details>
+      <summary>ドラッグしたのに XIAO-SENSE が消えない／版が変わらない</summary>
+      <ul>
+        <li>ドラッグしたファイルの名前が <span class="name">.uf2</span> で終わっているか確かめてください。</li>
+        <li>もう一度、手順4（ボタンを2回押す）からやり直してください。</li>
+      </ul>
+    </details>
+
+    <details>
+      <summary>失敗したら本体が壊れない？</summary>
+      <p>壊れません。書き込みの途中でケーブルが抜けても、ボタンを2回押せば何度でもやり直せます。</p>
+    </details>
+
+    <details>
+      <summary>設定は消えない？</summary>
+      <p>消えません。角度の設定、基準姿勢、記録したデータは、そのまま残ります。</p>
+    </details>
+  </section>
+</div>
+
+<div class="kerb" aria-hidden="true"></div>
+<footer>
+  <div class="wrap"><a href="/">westisland.jp</a></div>
+</footer>
+
+<script>
+  // いちばん新しい版の情報を読む (HangOff 設定アプリと同じファイル)
+  (async () => {
+    const ver = document.getElementById('ver');
+    const meta = document.getElementById('meta');
+    const dl = document.getElementById('download');
+    const fname = document.getElementById('fname');
+    try {
+      const res = await fetch('/hangoff/firmware/latest.json', { cache: 'no-store' });
+      if (!res.ok) throw new Error(res.status);
+      const j = await res.json();
+      ver.textContent = 'v' + j.version;
+      meta.textContent = j.date ? j.date + ' 公開' : '';
+      dl.href = '/hangoff/firmware/' + encodeURIComponent(j.file);
+      dl.setAttribute('download', j.file);
+      fname.textContent = j.file;
+    } catch (e) {
+      ver.textContent = '読み込めませんでした';
+      dl.removeAttribute('download');
+      dl.textContent = 'HangOff 設定のアップデート画面へ';
+      document.getElementById('dlNote').textContent = 'HangOff 設定を開き、「本体のアップデート」からダウンロードしてください。';
+    }
+  })();
+</script>
+</body>
+</html>

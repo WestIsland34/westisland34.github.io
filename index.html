@@ -122,6 +122,10 @@
   .btn:active { transform: translate(3px, 3px); box-shadow: 2px 2px 0 var(--btn-shadow); }
   .btn:focus-visible { outline: 3px solid var(--text); outline-offset: 4px; }
 
+  .work-text .more { margin: 1.4rem 0 0; }
+  .more a { color: var(--text); font-weight: 700; text-decoration: underline; text-underline-offset: .25em; text-decoration-thickness: 2px; }
+  .more a:hover { text-decoration-thickness: 3px; }
+
   .rider { display: block; width: 100%; height: auto; animation: ride-in .9s cubic-bezier(.2, .8, .2, 1) both; }
   @keyframes ride-in {
     from { transform: translateX(22%); opacity: 0; }
@@ -168,6 +172,7 @@
       <h2>HangOff</h2>
       <p>HangOffの設定ページです。</p>
       <a class="btn" href="/hangoff/">HangOff設定を開く</a>
+      <p class="more"><a href="/hangoff-firmware/">本体のアップデート方法 →</a></p>
     </div>
 
     <img class="rider photo" src="rider.png" alt="バイクのライダーがハングオフでコーナーを曲がるイラスト">

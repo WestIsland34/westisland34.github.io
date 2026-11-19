@@ -150,6 +150,23 @@
     object-fit: cover;
   }
 
+  /* XIAO GIF Player: 小さな有機EL画面に見立てて、96x64 のドットをそのまま拡大する */
+  .work.gif { flex: none; align-items: center; padding-bottom: clamp(28px, 6vh, 56px); }
+  .work.gif .work-text { padding-bottom: 0; }
+  .oled {
+    display: block;
+    justify-self: center;
+    width: 100%;
+    max-width: 480px;
+    aspect-ratio: 3 / 2;
+    height: auto;
+    image-rendering: pixelated;
+    background: #000;
+    border: 10px solid #05080F;
+    border-radius: 10px;
+    box-shadow: 8px 8px 0 var(--btn-shadow);
+  }
+
   /* 縁石 */
   .kerb {
     height: 24px;
@@ -162,6 +179,8 @@
   @media (max-width: 720px) {
     .work { grid-template-columns: 1fr; gap: 0; }
     .work-text { padding-bottom: 20px; }
+    .work.gif { grid-template-columns: 1fr; }
+    .work.gif .work-text { padding-bottom: 24px; }
   }
 </style>
 </head>
@@ -181,6 +200,17 @@
     </div>
 
     <img class="rider photo" src="rider.png" alt="バイクのライダーがハングオフでコーナーを曲がるイラスト">
+  </section>
+
+  <section class="wrap work gif">
+    <div class="work-text">
+      <h2>XIAO GIF Player</h2>
+      <p>PC の GIF アニメを Bluetooth で XIAO MG24 に送り、小さなカラー有機ELで再生します。</p>
+      <a class="btn" href="/XIAO-MG24/">GIF Playerを開く</a>
+      <p class="more"><a href="https://github.com/WestIsland34/XIAO-MG24">作り方とソース (GitHub) →</a></p>
+    </div>
+
+    <img class="oled" src="dancer_96x64.gif" width="96" height="64" alt="96×64ドットで踊る女の子のGIFアニメ">
   </section>
 </main>
 

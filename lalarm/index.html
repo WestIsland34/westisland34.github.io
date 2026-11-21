@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/icon-192.png" type="image/png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="manifest" href="/site.webmanifest">
+<meta name="theme-color" content="#FFC400">
+<title>機体発見アラーム | にしやん工房</title>
+<meta name="description" content="直径 10 mm・重さ 1 g の自作の機体発見アラーム。1 分ごとに分報、7 分後からアラームが鳴り続けます。">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Dela+Gothic+One&family=Zen+Kaku+Gothic+New:wght@500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #FFC400;
+    --text: #141B2D;
+    --sub: #4A4320;
+    --line: #141B2D;
+    --card: #FFFFFF;
+    --card-text: #141B2D;
+    --card-sub: #4F5566;
+    --accent: #D8342B;
+    --chip: #141B2D;
+    --chip-text: #FFC400;
+    --soft: #FFF4CC;
+    --kerb: #D8342B;
+    --asphalt: #141B2D;
+    --asphalt-text: #C9CEDD;
+    --btn-shadow: #FFFFFF;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      color-scheme: dark;
+      --bg: #141B2D;
+      --text: #FFC400;
+      --sub: #C9CEDD;
+      --line: #F6F3E7;
+      --card: #1E2740;
+      --card-text: #F6F3E7;
+      --card-sub: #B5BBCB;
+      --accent: #FF6A5C;
+      --chip: #FFC400;
+      --chip-text: #141B2D;
+      --soft: #283252;
+      --asphalt: #0A0E19;
+      --btn-shadow: #D8342B;
+    }
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: "Zen Kaku Gothic New", "Hiragino Kaku Gothic ProN", "Yu Gothic", Meiryo, sans-serif;
+    font-weight: 500;
+    line-height: 1.8;
+    overflow-x: clip;
+  }
+  .wrap { width: 100%; max-width: 820px; margin: 0 auto; padding: 0 clamp(16px, 5vw, 40px); }
+
+  .back { display: inline-block; margin-top: 24px; color: var(--text); font-weight: 700; text-decoration: none; }
+  .back:hover { text-decoration: underline; }
+
+  header.hero { padding: clamp(20px, 5vh, 48px) 0 8px; }
+  header.hero h1 { margin: .1em 0 .3em; font-size: clamp(1.8rem, 8vw, 3.4rem); line-height: 1.2; font-weight: 700; letter-spacing: .02em; }
+  header.hero .lead { margin: 0; font-size: clamp(1rem, 2.4vw, 1.15rem); font-weight: 700; color: var(--sub); }
+
+  .photos { display: grid; grid-template-columns: 2.6fr 1fr; gap: clamp(12px, 3vw, 24px); margin: 28px 0; align-items: stretch; }
+  .photos img {
+    display: block; width: 100%; height: 100%;
+    object-fit: cover;
+    border: 3px solid var(--line);
+    border-radius: 10px;
+    box-shadow: 6px 6px 0 var(--btn-shadow);
+    background: #fff;
+  }
+
+  .card {
+    background: var(--card);
+    color: var(--card-text);
+    border: 3px solid var(--line);
+    border-radius: 12px;
+    box-shadow: 6px 6px 0 var(--btn-shadow);
+    padding: clamp(16px, 4vw, 28px);
+    margin: 28px 0;
+  }
+  .card h2 { margin: 0 0 .5em; font-size: clamp(1.3rem, 3.6vw, 1.7rem); line-height: 1.3; }
+  .card p { margin: .5em 0; }
+  .card .note { color: var(--card-sub); font-size: .95rem; }
+
+  /* 仕様 */
+  .spec { margin: 0; display: grid; grid-template-columns: max-content 1fr; gap: 8px 20px; }
+  .spec dt { font-weight: 700; }
+  .spec dd { margin: 0; }
+
+  /* 鳴り方 */
+  .beeps { list-style: none; margin: 8px 0 0; padding: 0; }
+  .beeps li { display: grid; grid-template-columns: 4.5em 1fr; align-items: center; gap: 12px; padding: 8px 0; border-top: 2px solid var(--soft); }
+  .beeps li:last-child { border-bottom: 2px solid var(--soft); }
+  .beeps .min { font-weight: 700; }
+  .dots { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+  .dots i { width: 22px; height: 12px; border-radius: 6px; background: var(--chip); }
+  .dots .long { flex: 1; min-width: 120px; height: 12px; border-radius: 6px; background: repeating-linear-gradient(90deg, var(--accent) 0 18px, transparent 18px 24px); }
+  .dots span { margin-left: 6px; font-size: .95rem; color: var(--card-sub); }
+  .beeps li.alarm .min { color: var(--accent); }
+
+  /* 写真つきのカード */
+  .shot { margin: 16px 0 0; }
+  .shot img {
+    display: block; width: 100%; height: auto;
+    border: 3px solid var(--line);
+    border-radius: 10px;
+  }
+  .shot figcaption { margin-top: 6px; font-weight: 700; color: var(--card-sub); font-size: .95rem; }
+  .shots2 { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(12px, 3vw, 20px); }
+  .shots2 .wide { grid-column: 1 / -1; }
+  .weight { max-width: 520px; }
+  .boards { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(12px, 3vw, 24px); max-width: 560px; }
+  .boards img { border: none; border-radius: 50%; }
+  .boards figcaption { text-align: center; }
+
+  .conn { margin: 0; padding-left: 1.2em; }
+  .conn li { margin: .3em 0; }
+
+  .btn {
+    display: inline-block;
+    margin-top: 8px;
+    padding: .8em 1.5em;
+    font-family: "Dela Gothic One", "Hiragino Kaku Gothic ProN", "Yu Gothic", Meiryo, sans-serif;
+    font-size: clamp(1.05rem, 2.6vw, 1.25rem);
+    line-height: 1.2;
+    text-decoration: none;
+    color: var(--chip-text);
+    background: var(--chip);
+    border: 3px solid var(--line);
+    border-radius: 10px;
+    box-shadow: 5px 5px 0 var(--accent);
+    transition: transform .12s ease, box-shadow .12s ease;
+  }
+  .btn:hover { transform: translate(-2px, -2px); box-shadow: 7px 7px 0 var(--accent); }
+  .btn:active { transform: translate(3px, 3px); box-shadow: 2px 2px 0 var(--accent); }
+  @media (prefers-reduced-motion: reduce) { .btn { transition: none; } }
+
+  .kerb { height: 24px; margin-top: 48px; border-top: 3px solid var(--line); background: repeating-linear-gradient(90deg, var(--kerb) 0 64px, #FFFFFF 64px 128px); }
+  footer { background: var(--asphalt); color: var(--asphalt-text); font-size: .875rem; }
+  footer .wrap { padding-top: 18px; padding-bottom: 22px; }
+  footer a { color: inherit; }
+
+  @media (max-width: 560px) {
+    .photos { grid-template-columns: 1fr; }
+    .photos .part { max-width: 200px; justify-self: center; }
+    .spec { grid-template-columns: 1fr; gap: 0; }
+    .spec dd { margin-bottom: 10px; }
+    .shots2 { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<main class="wrap">
+  <a class="back" href="/">← にしやん工房</a>
+
+  <header class="hero">
+    <h1>機体発見アラーム</h1>
+    <p class="lead">市販の物は大きくて重すぎたので、超小型・軽量の機体発見アラームを自作しました。直径 φ10 mm、重さ 1 g。K110S に乗せても飛行に影響がありません。</p>
+  </header>
+
+  <div class="photos">
+    <img class="main" src="/lalarm_k110s.jpg" width="1400" height="788" alt="ヘリコプター K110S の受信基板の上に、青いブザーを取り付けたところ">
+    <img class="part" src="/lalarm_buzzer.jpg" width="480" height="814" alt="赤と黒の線がついた、青い小型ブザー">
+  </div>
+
+  <section class="card">
+    <h2>鳴り方</h2>
+    <p>1 分ごとに分報が鳴ります。5 分後なら 5 回「ピーッ」と鳴るので、何分飛ばしたかの目安にもなります。7 分後からはアラームが鳴り続けるので、草むらに墜落しても容易に発見できます。</p>
+    <ul class="beeps">
+      <li><span class="min">1 分後</span><span class="dots"><i></i><span>1 回</span></span></li>
+      <li><span class="min">2 分後</span><span class="dots"><i></i><i></i><span>2 回</span></span></li>
+      <li><span class="min">3 分後</span><span class="dots"><i></i><i></i><i></i><span>3 回</span></span></li>
+      <li><span class="min">4 分後</span><span class="dots"><i></i><i></i><i></i><i></i><span>4 回</span></span></li>
+      <li><span class="min">5 分後</span><span class="dots"><i></i><i></i><i></i><i></i><i></i><span>5 回</span></span></li>
+      <li><span class="min">6 分後</span><span class="dots"><i></i><i></i><i></i><i></i><i></i><i></i><span>6 回</span></span></li>
+      <li class="alarm"><span class="min">7 分後〜</span><span class="dots"><b class="long"></b><span>鳴り続ける</span></span></li>
+    </ul>
+    <p class="note">時間は電源が入ったときから数えます。電源が入ると、まず短い起動音が鳴ります。</p>
+  </section>
+
+  <section class="card">
+    <h2>重さ 1 g</h2>
+    <p>はかりで実際に計ると 1.0 g。小さなヘリに乗せても飛行に影響がありません。</p>
+    <figure class="shot weight">
+      <img src="weight.jpg" width="900" height="716" alt="キッチンスケールに機体発見アラームを載せ、1.0 g と表示されているところ" loading="lazy">
+    </figure>
+  </section>
+
+  <section class="card">
+    <h2>接続</h2>
+    <ul class="conn">
+      <li><b>K110S</b>：B+ と B- に接続します。</li>
+      <li><b>それ以外の機体</b>：S.BUS のコネクタなどに接続します。</li>
+    </ul>
+    <div class="shots2">
+      <figure class="shot wide">
+        <img src="/lalarm_k110s.jpg" width="1400" height="788" alt="K110S の受信基板の上に機体発見アラームを載せ、B+ と B- につないだところ" loading="lazy">
+        <figcaption>K110S に載せたところ（B+ と B- に接続）</figcaption>
+      </figure>
+      <figure class="shot">
+        <img src="s1.jpg" width="1200" height="676" alt="S1 のフライトコントローラーの上に機体発見アラームを載せたところ" loading="lazy">
+        <figcaption>S1 に載せたところ</figcaption>
+      </figure>
+      <figure class="shot">
+        <img src="s2ultra.jpg" width="1200" height="676" alt="S2 ULTRA のフライトコントローラーの上に機体発見アラームを載せたところ" loading="lazy">
+        <figcaption>S2 ULTRA に載せたところ</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>基板</h2>
+    <p>直径 10 mm の丸い基板です。表に PIC10F202 と部品、端子 G・V・D。裏には書き込み用の端子（~M・V・G・D・C）があります。</p>
+    <div class="boards">
+      <figure class="shot">
+        <img src="lalarm_t.png" width="600" height="600" alt="基板の表。PIC10F202 と小さな部品、G・V・D の端子" loading="lazy">
+        <figcaption>表</figcaption>
+      </figure>
+      <figure class="shot">
+        <img src="lalarm_b.png" width="600" height="590" alt="基板の裏。書き込み用の端子 ~M・V・G・D・C" loading="lazy">
+        <figcaption>裏</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>仕様</h2>
+    <dl class="spec">
+      <dt>大きさ</dt><dd>直径 φ10 mm</dd>
+      <dt>重さ</dt><dd>1 g</dd>
+      <dt>マイコン</dt><dd>PIC10F202（SOT-23 の 6 ピン）</dd>
+      <dt>ブザー</dt><dd>AT-0927-TT-5</dd>
+      <dt>電源</dt><dd>3.3〜5 V</dd>
+    </dl>
+  </section>
+
+  <section class="card">
+    <h2>設計データを公開しています</h2>
+    <p>基板の KiCad データ（LALARM）と、PIC のプログラム（MPLAB X のプロジェクト LALARM.X）を GitHub で公開しています。</p>
+    <a class="btn" href="https://github.com/WestIsland34/LAlarm">GitHub を開く</a>
+  </section>
+</main>
+
+<div class="kerb" aria-hidden="true"></div>
+<footer>
+  <div class="wrap"><a href="/">westisland.jp</a></div>
+</footer>
+</body>
+</html>

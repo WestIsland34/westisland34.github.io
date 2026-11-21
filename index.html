@@ -170,6 +170,10 @@
   /* NRX01: 基板の表と裏を並べる */
   .work.board { flex: none; align-items: center; padding-bottom: clamp(28px, 6vh, 56px); }
   .work.board .work-text { padding-bottom: 0; }
+  .work-text ul.feat { margin: 0 0 1.4rem; padding-left: 1.2em; color: var(--sub); font-weight: 700; line-height: 1.6; }
+  .work-text ul.feat li { margin: .2rem 0; }
+  .work-text ul.feat b { color: var(--text); }
+  .work.board .work-text > p:first-of-type { margin-bottom: .6rem; }
   .pcbs {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -216,7 +220,15 @@
   <section class="wrap work board">
     <div class="work-text">
       <h2>NRX01 S-FHSS 受信機</h2>
-      <p>CC2500 の小さな受信基板と XIAO MG24 で作る、Futaba S-FHSS 受信機です。S.BUS・PWM 出力とブラックボックス記録つき。</p>
+      <p>CC2500 の小さな受信基板と XIAO MG24 Sense で作る、Futaba S-FHSS 受信機です。</p>
+      <ul class="feat">
+        <li><b>受信のみ</b>：技適のない無線部からは電波を出さない設計</li>
+        <li><b>S.BUS 16 ch</b> と <b>PWM 6 ch</b> を同時に出力</li>
+        <li><b>ブラックボックス</b>：100 Hz で 4 MB に記録、Betaflight / Rotorflight 互換</li>
+        <li><b>フライトシミュレーター</b>：Bluetooth ゲームパッドとして PC につながる</li>
+        <li><b>Web アプリ</b>：USB か Bluetooth で、ログ保存・バインド</li>
+        <li>無線部は TI の CC2500 参照設計を 1:1 で使用</li>
+      </ul>
       <a class="btn" href="/Receiver/">Receiverを開く</a>
       <p class="more"><a href="https://github.com/WestIsland34/Receiver">仕様書とソース (GitHub) →</a></p>
     </div>

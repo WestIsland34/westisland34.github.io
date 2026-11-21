@@ -367,5 +367,15 @@
 <footer>
   <div class="wrap">westisland.jp</div>
 </footer>
+<script>
+  // トップページのリンクを押した回数を GoatCounter のイベントとして数える。
+  // 名前は「トップ→」＋行き先。あとからリンクを足しても自動で数える。
+  document.querySelectorAll('a[href]').forEach(function (a) {
+    var to = a.getAttribute('href').replace(/^https?:\/\//, '');
+    a.setAttribute('data-goatcounter-click', 'トップ→' + to);
+    a.setAttribute('data-goatcounter-title', a.textContent.trim());
+  });
+  if (window.goatcounter && window.goatcounter.bind_events) window.goatcounter.bind_events();
+</script>
 </body>
 </html>

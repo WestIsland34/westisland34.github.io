@@ -167,6 +167,26 @@
     box-shadow: 8px 8px 0 var(--btn-shadow);
   }
 
+  /* NRX01: 基板の表と裏を並べる */
+  .work.board { flex: none; align-items: center; padding-bottom: clamp(28px, 6vh, 56px); }
+  .work.board .work-text { padding-bottom: 0; }
+  .pcbs {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: clamp(14px, 3vw, 28px);
+    justify-self: center;
+    width: 100%;
+    max-width: 480px;
+  }
+  .pcbs img {
+    display: block;
+    width: 100%;
+    height: auto;
+    border: 3px solid var(--line);
+    border-radius: 10px;
+    box-shadow: 8px 8px 0 var(--btn-shadow);
+  }
+
   /* 縁石 */
   .kerb {
     height: 24px;
@@ -181,6 +201,8 @@
     .work-text { padding-bottom: 20px; }
     .work.gif { grid-template-columns: 1fr; }
     .work.gif .work-text { padding-bottom: 24px; }
+    .work.board { grid-template-columns: 1fr; }
+    .work.board .work-text { padding-bottom: 24px; }
   }
 </style>
 </head>
@@ -211,6 +233,19 @@
     </div>
 
     <img class="oled" src="dancer_96x64.gif" width="96" height="64" alt="96×64ドットで踊る女の子のGIFアニメ">
+  </section>
+  <section class="wrap work board">
+    <div class="work-text">
+      <h2>NRX01 S-FHSS 受信機</h2>
+      <p>CC2500 の小さな受信基板と XIAO MG24 で作る、Futaba S-FHSS 受信機です。S.BUS・PWM 出力とブラックボックス記録つき。</p>
+      <a class="btn" href="/Receiver/">Receiverを開く</a>
+      <p class="more"><a href="https://github.com/WestIsland34/Receiver">仕様書とソース (GitHub) →</a></p>
+    </div>
+
+    <div class="pcbs">
+      <img src="nrx01_top.png" width="1333" height="1878" alt="NRX01 基板の表面。中央に CC2500、右に水晶、上にアンテナと GND の端子">
+      <img src="nrx01_bottom.png" width="1341" height="1879" alt="NRX01 基板の裏面。ピン名と「に」のロゴ、Made in Japan の文字">
+    </div>
   </section>
 </main>
 
